@@ -1,3 +1,10 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-office",
+      "description": "A modern office building against a city skyline, representing corporate services",
+      "imageUrl": "https://images.unsplash.com/photo-1729243830494-7c151f7c3e3c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxvZmZpY2UlMjBjaXR5c2NhcGV8ZW58MHx8fHwxNzY5NjIyNTE4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "office cityscape"
+    }
+  ]
 }
