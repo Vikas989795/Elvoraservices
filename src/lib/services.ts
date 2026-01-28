@@ -18,7 +18,8 @@ import {
   BarChart,
   UserCheck,
   FileText,
-  Wallet
+  Wallet,
+  Users
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
