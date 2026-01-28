@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -41,11 +40,11 @@ export default function Header() {
         <NavigationMenu className="hidden md:flex">
           <NavigationMenuList>
             <NavigationMenuItem>
-              <Link href="/" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              <NavigationMenuLink asChild>
+                <Link href="/" className={navigationMenuTriggerStyle()}>
                   Home
-                </NavigationMenuLink>
-              </Link>
+                </Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
               <NavigationMenuTrigger>Services</NavigationMenuTrigger>
@@ -70,18 +69,18 @@ export default function Header() {
               </NavigationMenuContent>
             </NavigationMenuItem>
              <NavigationMenuItem>
-              <Link href="/careers" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Careers
+                <NavigationMenuLink asChild>
+                  <Link href="/careers" className={navigationMenuTriggerStyle()}>
+                    Careers
+                  </Link>
                 </NavigationMenuLink>
-              </Link>
             </NavigationMenuItem>
              <NavigationMenuItem>
-              <Link href="/enquiry" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Contact
+                <NavigationMenuLink asChild>
+                  <Link href="/enquiry" className={navigationMenuTriggerStyle()}>
+                    Contact
+                  </Link>
                 </NavigationMenuLink>
-              </Link>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
