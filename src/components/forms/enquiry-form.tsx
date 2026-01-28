@@ -1,11 +1,10 @@
 'use client';
 
-import { useFormState } from 'react-dom';
+import { useActionState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
 
 import { submitEnquiry, type EnquiryState } from '@/lib/actions';
 import { serviceCategories } from '@/lib/services';
@@ -40,7 +39,7 @@ const initialState: EnquiryState = {
 export default function EnquiryForm() {
   const searchParams = useSearchParams();
   const defaultService = searchParams.get('service');
-  const [state, formAction] = useFormState(submitEnquiry, initialState);
+  const [state, formAction] = useActionState(submitEnquiry, initialState);
   const { toast } = useToast();
 
   const form = useForm<EnquiryFormInputs>({

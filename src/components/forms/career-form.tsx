@@ -1,10 +1,9 @@
 'use client';
 
-import { useFormState } from 'react-dom';
+import { useActionState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 import { submitApplication, type CareerState } from '@/lib/actions';
@@ -31,7 +30,7 @@ const initialState: CareerState = {
 };
 
 export default function CareerForm() {
-  const [state, formAction] = useFormState(submitApplication, initialState);
+  const [state, formAction] = useActionState(submitApplication, initialState);
   const { toast } = useToast();
 
   const {
