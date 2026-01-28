@@ -23,6 +23,7 @@ export default function Footer() {
           <div>
             <h3 className="font-headline text-lg font-bold">Contact Information</h3>
             <div className="mt-2 space-y-3 text-sm text-muted-foreground">
+                <p className="font-bold text-secondary-foreground">ELVORA SERVICES ENTERPRISES</p>
                 <div className="flex items-center">
                     <Phone className="h-4 w-4 mr-2" />
                     <span>+91 8273157482</span>
