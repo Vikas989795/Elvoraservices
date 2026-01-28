@@ -43,7 +43,12 @@ import {
   CircleDollarSign,
   LifeBuoy,
   Scale,
-  Receipt
+  Receipt,
+  Bot,
+  Sparkles,
+  Languages,
+  Search,
+  BrainCircuit,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -256,6 +261,38 @@ export const serviceCategories: ServiceCategory[] = [
        { name: 'Website Development', slug: 'website-development', icon: Globe, description: 'Creating professional and responsive websites for your business.' },
        { name: 'PhonePe Services', slug: 'phonepe', icon: Smartphone, description: 'Utilize PhonePe for UPI and other transactions.' },
        { name: 'PayNearby', slug: 'paynearby', icon: Store, description: 'AEPS and bill payment services.'},
+    ],
+  },
+  {
+    name: 'AI & Advanced Features',
+    slug: 'ai-features',
+    icon: BrainCircuit,
+    description: 'Cutting-edge AI-powered tools to enhance your experience.',
+    options: [
+      {
+        name: 'AI Chatbot',
+        slug: 'ai-chatbot',
+        icon: Bot,
+        description: 'Get instant informational guidance and assistance with enquiry forms through our conversational AI.',
+      },
+      {
+        name: 'Smart Service Recommendation',
+        slug: 'smart-recommendation',
+        icon: Sparkles,
+        description: 'Dynamically receive suggestions for related services based on your browsing activity.',
+      },
+      {
+        name: 'Auto Language Switch',
+        slug: 'language-switch',
+        icon: Languages,
+        description: 'Seamlessly switch website content between Hindi and English for your convenience.',
+      },
+      {
+        name: 'Intelligent Search',
+        slug: 'intelligent-search',
+        icon: Search,
+        description: 'Use our icon-enhanced, real-time search bar to find services quickly and intuitively.',
+      },
     ],
   },
 ];
