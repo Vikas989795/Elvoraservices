@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Mail, Phone } from "lucide-react";
+import { Mail, Phone, MapPin } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -23,14 +23,21 @@ export default function Footer() {
           <div>
             <h3 className="font-headline text-lg font-bold">Contact Information</h3>
             <div className="mt-2 space-y-2 text-sm">
-              <div className="flex items-center">
-                <Phone className="h-4 w-4 mr-2" />
-                <span>+91 12345 67890</span>
-              </div>
-              <div className="flex items-center">
-                <Mail className="h-4 w-4 mr-2" />
-                <span>contact@elvora.com</span>
-              </div>
+                <div className="flex items-start">
+                    <Phone className="h-4 w-4 mr-2 mt-1 flex-shrink-0" />
+                    <div className="flex flex-col">
+                        <span>+91 8273157482</span>
+                        <span>+91 9897957482</span>
+                    </div>
+                </div>
+                <div className="flex items-center">
+                    <Mail className="h-4 w-4 mr-2" />
+                    <span>Helpdesk@elvoraservices.com</span>
+                </div>
+                <div className="flex items-start">
+                    <MapPin className="h-4 w-4 mr-2 mt-1 flex-shrink-0" />
+                    <span>Shahpur Khurd, Sasni, Hathras, Uttar Pradesh – 204101</span>
+                </div>
             </div>
           </div>
         </div>
