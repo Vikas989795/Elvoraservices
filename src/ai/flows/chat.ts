@@ -10,7 +10,7 @@ import { serviceCategories } from '@/lib/services';
 import { z } from 'zod';
 import { ChatInputSchema } from '../schema/chat';
 
-export function chat(input: z.infer<typeof ChatInputSchema>) {
+export async function chat(input: z.infer<typeof ChatInputSchema>) {
   // Reduce the size of the service data to avoid hitting token limits.
   const serviceSummary = serviceCategories.map(category => ({
     name: category.name,

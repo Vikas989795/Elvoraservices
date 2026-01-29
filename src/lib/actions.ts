@@ -95,7 +95,7 @@ export async function streamChat(history: Message[]) {
 
   (async () => {
     try {
-      const llmStream = chat({ history, prompt: history[history.length - 1].content });
+      const llmStream = await chat({ history, prompt: history[history.length - 1].content });
       for await (const chunk of llmStream) {
         if (chunk.text) {
           stream.update({ response: chunk.text });
