@@ -69,7 +69,7 @@ export function useChat() {
                 continue; // Go to the next iteration of the while loop
             } else {
                 // This is a permanent failure (or max retries reached)
-                console.error('Chat submission failed permanently.', error);
+                console.warn('Chat submission failed after multiple retries.', error);
                 let description = "Sorry, I'm having a little trouble connecting right now. Please try again in a moment.";
                 if (isRateLimitError) {
                     description = 'Our AI assistant is currently experiencing high traffic. Please try again in a minute.';
