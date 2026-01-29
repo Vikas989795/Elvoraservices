@@ -30,7 +30,6 @@ export function useChat() {
 
     let attempts = 0;
     const maxAttempts = 3;
-    const retryDelay = 5000;
 
     while (attempts < maxAttempts) {
         try {
@@ -54,6 +53,7 @@ export function useChat() {
             const isRateLimitError = errorMessage.includes('429') || errorMessage.includes('quota');
             
             if (isRateLimitError && attempts < maxAttempts) {
+                const retryDelay = 5000 * Math.pow(2, attempts - 1); // Exponential backoff: 5s, 10s
                 console.warn(`Attempt ${attempts} failed due to rate limiting. Retrying in ${retryDelay / 1000}s...`);
                 // Update UI to show retry status
                 setMessages(prev => {
