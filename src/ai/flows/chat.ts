@@ -11,6 +11,11 @@ import { z } from 'zod';
 import { ChatInputSchema } from '../schema/chat';
 
 export async function chat(input: z.infer<typeof ChatInputSchema>) {
+  if (!process.env.GEMINI_API_KEY) {
+    throw new Error(
+      'The GEMINI_API_KEY environment variable is not set. The AI assistant is not configured correctly.'
+    );
+  }
   // Reduce the size of the service data to avoid hitting token limits.
   const serviceSummary = serviceCategories.map(category => ({
     name: category.name,
