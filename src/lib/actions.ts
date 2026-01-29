@@ -1,6 +1,9 @@
 'use server';
 
 import { z } from 'zod';
+import { chat } from '@/ai/flows/chat';
+import { Message } from '@/ai/schema/chat';
+import { createStreamableValue } from 'ai/rsc';
 
 const enquirySchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -84,4 +87,27 @@ export async function submitApplication(prevState: CareerState, formData: FormDa
     message: 'Your application has been received. Thank you for your interest in Elvora Services Enterprises.',
     status: 'success',
   };
+}
+
+
+export async function streamChat(history: Message[]) {
+  const stream = createStreamableValue({ response: '' });
+
+  (async () => {
+    try {
+      const llmStream = chat({ history, prompt: history[history.length - 1].content });
+      for await (const chunk of llmStream) {
+        if (chunk.text) {
+          stream.update({ response: chunk.text });
+        }
+      }
+    } catch (e) {
+      console.error(e);
+      stream.update({ response: 'An error occurred. Please try again.' });
+    } finally {
+      stream.done();
+    }
+  })();
+
+  return stream.value;
 }

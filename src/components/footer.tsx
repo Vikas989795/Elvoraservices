@@ -45,7 +45,7 @@ export default function Footer() {
         </div>
         <div className="mt-8 border-t border-border pt-8">
           <div className="text-sm text-muted-foreground space-y-2">
-            <p><span className="font-bold">Disclaimer:</span> We are a third-party facilitator. Services are provided after approval from authorized first-party institutions and are facilitated strictly through official government portals. We do not sell insurance; we only assist in connecting customers with authorized insurers.</p>
+            <p><span className="font-bold">Disclaimer:</span> Company is a third-party facilitator. Services are provided only after approval from authorized first-party institutions. Services are facilitated through official government / authorized portals. Company does NOT sell insurance. Company only assists in connecting customers with authorized insurers.</p>
           </div>
           <p className="mt-4 text-center text-xs text-muted-foreground">
             &copy; {new Date().getFullYear()} Elvora Services Enterprises. All Rights Reserved.

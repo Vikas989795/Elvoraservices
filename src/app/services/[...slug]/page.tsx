@@ -54,7 +54,6 @@ export default function ServiceNodePage({ params }: { params: { slug: string[] }
   if (isLeaf) {
     // Render detail page for the final service
     const category = path[0];
-    const serviceDescriptionForAI = `Service: ${path.map(p => p.name).join(' - ')}. Description: ${node.description}`;
     const Icon = node.icon;
 
     return (
@@ -64,7 +63,7 @@ export default function ServiceNodePage({ params }: { params: { slug: string[] }
         </div>
         <div className="bg-card p-8 rounded-lg shadow-sm">
           <div className="flex items-start">
-            <Icon className="h-12 w-12 text-primary mr-6 hidden sm:block" />
+             {Icon && <Icon className="h-12 w-12 text-primary mr-6 hidden sm:block" />}
             <div>
               <p className="text-sm font-medium text-primary">{path.length > 1 ? path[path.length - 2].name : category.name}</p>
               <h1 className="font-headline text-4xl md:text-5xl font-bold mt-1">{node.name}</h1>
@@ -82,7 +81,7 @@ export default function ServiceNodePage({ params }: { params: { slug: string[] }
           </div>
 
           <div className="mt-12">
-              <DisclaimerCard serviceDescription={serviceDescriptionForAI} />
+              <DisclaimerCard />
           </div>
         </div>
       </div>
@@ -105,7 +104,7 @@ export default function ServiceNodePage({ params }: { params: { slug: string[] }
                 <Card className="h-full transition-shadow duration-300 group-hover:shadow-lg">
                   <CardHeader className="flex flex-row items-center justify-between">
                     <div className="flex items-center">
-                      <Icon className="h-8 w-8 text-primary mr-4" />
+                      {Icon && <Icon className="h-8 w-8 text-primary mr-4" />}
                       <div>
                         <CardTitle className="font-headline text-lg">{option.name}</CardTitle>
                         {option.description && <CardDescription className="text-sm mt-1 line-clamp-2">{option.description}</CardDescription>}

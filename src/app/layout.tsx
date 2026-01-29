@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { Toaster } from "@/components/ui/toaster"
+import Chatbot from '@/components/chatbot';
 
 export const metadata: Metadata = {
   title: 'Elvora Services Enterprises',
@@ -28,6 +29,7 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
           <Footer />
         </div>
+        <Chatbot />
         <Toaster />
       </body>
     </html>

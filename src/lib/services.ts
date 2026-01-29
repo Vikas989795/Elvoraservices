@@ -1,54 +1,15 @@
 import {
-  Landmark,
-  Banknote,
-  Shield,
-  TrendingUp,
-  Briefcase,
-  Laptop,
-  Megaphone,
-  Fingerprint,
-  CreditCard,
-  Building,
-  Scroll,
-  HeartHandshake,
-  Car,
-  Home,
-  Cloud,
-  Layers,
-  BarChart,
-  UserCheck,
-  FileText,
-  Wallet,
-  Users,
-  Building2,
-  Server,
-  BookUser,
-  WalletCards,
-  PiggyBank,
-  HandCoins,
-  Newspaper,
-  Store,
-  Coins,
-  FileCheck2,
-  Network,
-  Smartphone,
-  QrCode,
-  Package,
-  GitBranch,
-  School,
-  ArrowRightLeft,
-  GanttChartSquare,
-  CandlestickChart,
-  Globe,
-  CircleDollarSign,
-  LifeBuoy,
-  Scale,
+  Landmark, Banknote, Shield, TrendingUp, Briefcase, Laptop, Megaphone, FileText, Store,
+  Building2, Building, Smartphone, PiggyBank,
+  UserCheck, CreditCard, Vote, Car, Scroll, FileCheck, CircleDollarSign,
+  ArrowRightLeft, BarChart, GanttChartSquare, QrCode,
+  HeartHandshake, Home, Package, LifeBuoy,
+  CandlestickChart, Layers,
   Receipt,
-  Bot,
-  Sparkles,
-  Languages,
-  Search,
-  BrainCircuit,
+  Scan, Printer, FileUp,
+  Globe, Users, Search, Bot, Sparkles, Languages,
+  BookUser, Server, WalletCards, HandCoins, Newspaper, Coins, FileCheck2, Network, GitBranch, School, Scale, BrainCircuit,
+  Wallet, Tractor, User, Award, Library, BadgePercent, Star, Handshake, Milestone
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -60,239 +21,342 @@ export interface ServiceOption {
   options?: ServiceOption[];
 }
 
-export interface ServiceCategory extends ServiceOption {}
+export interface ServiceCategory extends ServiceOption { }
 
 export const serviceCategories: ServiceCategory[] = [
   {
-    name: 'Government Services',
-    slug: 'government',
-    icon: Landmark,
-    description: 'Assistance with various government-issued documents and services.',
-    options: [
-      { name: 'PAN Card', slug: 'pan-card', icon: CreditCard, description: 'Apply for a new PAN card or make corrections to an existing one.' },
-      { name: 'Aadhaar Card', slug: 'aadhaar-card', icon: UserCheck, description: 'Services for Aadhaar enrollment, updates, and corrections.' },
-      { name: 'Passport', slug: 'passport', icon: FileText, description: 'Guidance and application support for obtaining a new passport.' },
-    ],
-  },
-  {
-    name: 'Banking Services',
-    slug: 'banking',
+    name: 'Banking & Financial Services',
+    slug: 'banking-financial-services',
     icon: Banknote,
-    description: 'Facilitating a range of banking transactions and account services.',
+    description: 'Facilitation for a wide range of banking services. Subject to first-party approval.',
     options: [
       {
-        name: 'Public Sector Banks',
-        slug: 'public-sector-banks',
-        icon: Building2,
-        description: 'Services related to major public sector banks in India.',
+        name: 'Bank Categories',
+        slug: 'bank-categories',
+        icon: Library,
+        description: 'Services across Government, Private, Payment, and Small Finance Banks.',
         options: [
-          { name: 'State Bank of India (SBI)', slug: 'sbi', icon: School, description: 'Services for SBI customers.', options: [
-              { name: 'Savings & Current Account', slug: 'accounts', icon: Wallet, description: 'Information on opening and managing accounts.'},
-              { name: 'AEPS Support', slug: 'aeps', icon: Fingerprint, description: 'Aadhaar Enabled Payment System with SBI.'},
-              { name: 'BC / Bank Mitra Info', slug: 'bc-mitra', icon: Users, description: 'Information about Business Correspondent services.'},
-              { name: 'Micro-ATM Info', slug: 'micro-atm', icon: Laptop, description: 'Details on Micro-ATM services.'},
-          ]},
-          { name: 'Punjab National Bank (PNB)', slug: 'pnb', icon: School, description: 'Services for PNB customers.' },
-          { name: 'Bank of Baroda (BoB)', slug: 'bob', icon: School, description: 'Services for Bank of Baroda customers.' },
-          { name: 'Canara Bank', slug: 'canara-bank', icon: School, description: 'Services for Canara Bank customers.' },
-          { name: 'Union Bank of India', slug: 'union-bank', icon: School, description: 'Services for Union Bank of India customers.' },
-          { name: 'Punjab & Sind Bank (PSB)', slug: 'psb', icon: School, description: 'Services for Punjab & Sind Bank customers.' },
+          {
+            name: 'Government Banks',
+            slug: 'government-banks',
+            icon: Building2,
+            description: 'Facilitation for major public sector banks.',
+            options: [
+              { name: 'State Bank of India (SBI)', slug: 'sbi', icon: School, description: 'Assistance with SBI services.' },
+              { name: 'Punjab National Bank (PNB)', slug: 'pnb', icon: School, description: 'Assistance with PNB services.' },
+              { name: 'Bank of Baroda (BoB)', slug: 'bob', icon: School, description: 'Assistance with BoB services.' },
+              { name: 'Canara Bank', slug: 'canara-bank', icon: School, description: 'Assistance with Canara Bank services.' },
+              { name: 'Union Bank of India', slug: 'union-bank', icon: School, description: 'Assistance with Union Bank services.' },
+              { name: 'Bank of India', slug: 'boi', icon: School, description: 'Assistance with BOI services.' },
+            ]
+          },
+          {
+            name: 'Private Banks',
+            slug: 'private-banks',
+            icon: Building,
+            description: 'Facilitation for leading private sector banks.',
+            options: [
+              { name: 'HDFC Bank', slug: 'hdfc', icon: Building, description: 'Assistance with HDFC Bank services.' },
+              { name: 'ICICI Bank', slug: 'icici', icon: Building, description: 'Assistance with ICICI Bank services.' },
+              { name: 'Axis Bank', slug: 'axis', icon: Building, description: 'Assistance with Axis Bank services.' },
+              { name: 'Kotak Mahindra Bank', slug: 'kotak', icon: Building, description: 'Assistance with Kotak services.' },
+              { name: 'IndusInd Bank', slug: 'indusind', icon: Building, description: 'Assistance with IndusInd Bank services.' },
+              { name: 'IDFC FIRST Bank', slug: 'idfc', icon: Building, description: 'Assistance with IDFC FIRST Bank services.' },
+              { name: 'Yes Bank', slug: 'yes-bank', icon: Building, description: 'Assistance with Yes Bank services.' },
+              { name: 'RBL Bank', slug: 'rbl', icon: Building, description: 'Assistance with RBL Bank services.' },
+            ]
+          },
+          {
+            name: 'Payment Banks',
+            slug: 'payment-banks',
+            icon: Smartphone,
+            description: 'Facilitation for innovative payment banks.',
+            options: [
+              { name: 'Airtel Payments Bank', slug: 'airtel-payments', icon: Smartphone, description: 'Assistance with Airtel Payments Bank.' },
+              { name: 'Paytm Payments Bank', slug: 'paytm-payments', icon: Smartphone, description: 'Assistance with Paytm Payments Bank.' },
+              { name: 'India Post Payments Bank', slug: 'ippb', icon: Smartphone, description: 'Assistance with IPPB services.' },
+              { name: 'Fino Payments Bank', slug: 'fino-payments', icon: Smartphone, description: 'Assistance with Fino Payments Bank.' },
+              { name: 'Jio Payments Bank', slug: 'jio-payments', icon: Smartphone, description: 'Assistance with Jio Payments Bank.' },
+              { name: 'Aditya Birla Idea Payments Bank', slug: 'abipb', icon: Smartphone, description: 'Assistance with Aditya Birla Payments Bank.' },
+            ]
+          },
+          {
+            name: 'Small Finance Banks',
+            slug: 'small-finance-banks',
+            icon: PiggyBank,
+            description: 'Facilitation for specialized small finance banks.',
+            options: [
+              { name: 'AU Small Finance Bank', slug: 'au-sfb', icon: PiggyBank, description: 'Assistance with AU SFB.' },
+              { name: 'Equitas Small Finance Bank', slug: 'equitas-sfb', icon: PiggyBank, description: 'Assistance with Equitas SFB.' },
+              { name: 'Ujjivan Small Finance Bank', slug: 'ujjivan-sfb', icon: PiggyBank, description: 'Assistance with Ujjivan SFB.' },
+              { name: 'ESAF Small Finance Bank', slug: 'esaf-sfb', icon: PiggyBank, description: 'Assistance with ESAF SFB.' },
+              { name: 'Fincare Small Finance Bank', slug: 'fincare-sfb', icon: PiggyBank, description: 'Assistance with Fincare SFB.' },
+              { name: 'Jana Small Finance Bank', slug: 'jana-sfb', icon: PiggyBank, description: 'Assistance with Jana SFB.' },
+              { name: 'Suryoday Small Finance Bank', slug: 'suryoday-sfb', icon: PiggyBank, description: 'Assistance with Suryoday SFB.' },
+            ]
+          },
         ]
       },
       {
-        name: 'Private Sector Banks',
-        slug: 'private-sector-banks',
-        icon: Building,
-        description: 'Services related to major private sector banks.',
+        name: 'Bank Services',
+        slug: 'bank-services',
+        icon: Milestone,
+        description: 'Core banking service facilitation for any bank.',
         options: [
-          { name: 'HDFC Bank', slug: 'hdfc', icon: Building, description: 'Services for HDFC Bank customers.'},
-          { name: 'ICICI Bank', slug: 'icici', icon: Building, description: 'Services for ICICI Bank customers.'},
-          { name: 'Axis Bank', slug: 'axis', icon: Building, description: 'Services for Axis Bank customers.'},
-          { name: 'Kotak Mahindra Bank', slug: 'kotak', icon: Building, description: 'Services for Kotak Mahindra Bank customers.'},
-          { name: 'IDFC FIRST Bank', slug: 'idfc', icon: Building, description: 'Services for IDFC FIRST Bank customers.'},
-          { name: 'Yes Bank', slug: 'yes-bank', icon: Building, description: 'Services for Yes Bank customers.'},
-          { name: 'RBL Bank', slug: 'rbl', icon: Building, description: 'Services for RBL Bank customers.'},
-        ]
-      },
-       {
-        name: 'Small Finance Banks',
-        slug: 'small-finance-banks',
-        icon: PiggyBank,
-        description: 'Services related to small finance banks.',
-        options: [
-            { name: 'AU Small Finance Bank', slug: 'au-sfb', icon: PiggyBank, description: 'Services for AU SFB.'},
-            { name: 'Ujjivan Small Finance Bank', slug: 'ujjivan-sfb', icon: PiggyBank, description: 'Services for Ujjivan SFB.'},
-            { name: 'Equitas SFB', slug: 'equitas-sfb', icon: PiggyBank, description: 'Services for Equitas SFB.'},
-        ]
-      },
-      {
-        name: 'Payment Banks',
-        slug: 'payment-banks',
-        icon: WalletCards,
-        description: 'Services related to various payment banks in India.',
-        options: [
-            { name: 'Airtel Payments Bank', slug: 'airtel-payments', icon: Smartphone, description: 'AEPS, UPI, and other services.'},
-            { name: 'Paytm Payments Bank', slug: 'paytm-payments', icon: Smartphone, description: 'Wallet, UPI, and banking services.'},
-            { name: 'India Post Payments Bank', slug: 'ippb', icon: Smartphone, description: 'Government-backed payment bank services.'},
-            { name: 'Fino Payments Bank', slug: 'fino-payments', icon: Smartphone, description: 'Services by Fino Payments Bank.'},
-            { name: 'Jio Payments Bank', slug: 'jio-payments', icon: Smartphone, description: 'Services by Jio Payments Bank.'},
-        ]
-      },
-    ],
-  },
-  {
-    name: 'AEPS',
-    slug: 'aeps',
-    icon: Fingerprint,
-    description: 'Aadhaar Enabled Payment System for easy and secure transactions.',
-    options: [
-      { name: 'AEPS Transactions', slug: 'aeps-transactions', icon: ArrowRightLeft, description: 'Core AEPS functionalities.', options: [
-        { name: 'Cash Withdrawal', slug: 'cash-withdrawal', icon: Banknote, description: 'Withdraw cash from your bank account using your Aadhaar number.' },
-        { name: 'Balance Enquiry', slug: 'balance-enquiry', icon: BarChart, description: 'Check your bank account balance securely with your fingerprint.' },
-        { name: 'Mini Statement', slug: 'mini-statement', icon: GanttChartSquare, description: 'Get a mini statement of your recent transactions via AEPS.' },
-      ]},
-      {
-        name: 'AEPS Networks',
-        slug: 'aeps-networks',
-        icon: Network,
-        description: 'Connecting with various financial inclusion networks.',
-        options: [
-          { name: 'BankMitra (CSC AEPS)', slug: 'bankmitra', icon: Users, description: 'Services via the BankMitra CSC network.'},
-          { name: 'PayNearby', slug: 'paynearby', icon: Store, description: 'Financial services through PayNearby.'},
-          { name: 'Eko India Financial Services', slug: 'eko', icon: HandCoins, description: 'AEPS and recharge services.'},
-          { name: 'Spice Money', slug: 'spice-money', icon: Coins, description: 'Transactions, transfers, and bookings.'},
-        ]
-      },
-      {
-        name: 'NPCI System',
-        slug: 'npci-system',
-        icon: Server,
-        description: 'Services under the National Payments Corporation of India.',
-        options: [
-          { name: 'Fund Transfer / UPI', slug: 'fund-transfer-upi', icon: QrCode, description: 'UPI and fund transfer information.'},
+          {
+            name: 'Account Opening Assistance',
+            slug: 'account-opening',
+            icon: BookUser,
+            description: 'Guidance on opening Savings and Current accounts.',
+            options: [
+              { name: 'Savings Account', slug: 'savings-account', icon: Wallet, description: 'Eligibility, documents, and KYC process guidance.' },
+              { name: 'Current Account', slug: 'current-account', icon: Briefcase, description: 'Business eligibility and bank coordination support.' }
+            ]
+          },
+          {
+            name: 'AEPS Services',
+            slug: 'aeps-services-info',
+            icon: UserCheck,
+            description: 'Information on Aadhaar Enabled Payment System.',
+            options: [
+              { name: 'Cash Withdrawal', slug: 'aeps-cash-withdrawal', icon: Banknote, description: 'Info on biometric authentication and limits.' },
+              { name: 'Balance Enquiry', slug: 'aeps-balance-enquiry', icon: BarChart, description: 'Guidance on checking balance via AEPS.' },
+              { name: 'Mini Statement', slug: 'aeps-mini-statement', icon: GanttChartSquare, description: 'Information on getting transaction statements.' }
+            ]
+          },
+          {
+            name: 'Cash Services',
+            slug: 'cash-services',
+            icon: HandCoins,
+            description: 'Information on cash deposit and withdrawal services.',
+            options: [
+              { name: 'Cash Deposit Information', slug: 'cash-deposit', icon: FileCheck2, description: 'Guidance on branch or BC point deposits.' },
+              { name: 'Cash Withdrawal Information', slug: 'cash-withdrawal', icon: Banknote, description: 'Guidance on withdrawal processes.' }
+            ]
+          },
+          {
+            name: 'Other Banking Support',
+            slug: 'other-banking-support',
+            icon: Handshake,
+            description: 'Assistance with other essential banking tasks.',
+            options: [
+              { name: 'Jan Dhan Account Assistance', slug: 'jan-dhan', icon: Users, description: 'Guidance on PMJDY accounts.' },
+              { name: 'Bank KYC Update Guidance', slug: 'kyc-update', icon: UserCheck, description: 'Assistance with the KYC update process.' },
+              { name: 'Account Linking Support', slug: 'account-linking', icon: GitBranch, description: 'Guidance for linking Mobile/Aadhaar.' }
+            ]
+          }
         ]
       }
-    ],
+    ]
   },
   {
-    name: 'Insurance',
-    slug: 'insurance',
+    name: 'Digital Payment & Fintech',
+    slug: 'digital-payment-fintech',
+    icon: WalletCards,
+    description: 'Facilitating modern digital payment and financial technology services.',
+    options: [
+      { name: 'Aadhaar Enabled Payment System (AEPS)', slug: 'aeps', icon: UserCheck, description: 'Core AEPS services including withdrawal and balance enquiry.' },
+      { name: 'Micro-ATM Assistance', slug: 'micro-atm', icon: Laptop, description: 'Guidance on using Micro-ATM devices for transactions.' },
+      { name: 'UPI Onboarding Support', slug: 'upi-onboarding', icon: QrCode, description: 'Assistance with UPI registration and bank account linking.' },
+      { name: 'Bill Payment Assistance', slug: 'bill-payment', icon: Receipt, description: 'Facilitating utility bill payments for electricity, gas, etc.' },
+      { name: 'Mobile / DTH / Utility Recharge', slug: 'recharge', icon: Smartphone, description: 'Assistance with mobile, DTH, and other recharges.' },
+      { name: 'FASTag Assistance', slug: 'fastag', icon: Car, description: 'Guidance on FASTag application and recharge.' },
+      { name: 'Digital Wallet Guidance', slug: 'digital-wallet', icon: Wallet, description: 'Informational support for various digital wallets.' },
+      { name: 'BC / Banking Point Assistance', slug: 'bc-banking-point', icon: Users, description: 'Guidance on becoming a Business Correspondent.' },
+      { name: 'Spice Money / Spice Pay (Info)', slug: 'spice-money-info', icon: Coins, description: 'Informational guidance on Spice Money services.' },
+    ]
+  },
+  {
+    name: 'Government & CSC Services',
+    slug: 'government-csc-services',
+    icon: Landmark,
+    description: 'Assistance with a wide array of government and CSC-related services.',
+    options: [
+      {
+        name: 'Identity & Certificates',
+        slug: 'identity-certificates',
+        icon: Award,
+        description: 'Assistance for Aadhaar, PAN, and other essential certificates.',
+        options: [
+          { name: 'Aadhaar Enrolment / Update', slug: 'aadhaar-services', icon: UserCheck, description: 'Guidance on new enrolment and updates.' },
+          { name: 'PAN Card Application', slug: 'pan-card-services', icon: CreditCard, description: 'Support for new PAN and correction applications.' },
+          { name: 'Voter ID Application Support', slug: 'voter-id', icon: Vote, description: 'Assistance with new registration and corrections.' },
+          { name: 'Birth Certificate Support', slug: 'birth-certificate', icon: FileText, description: 'Guidance on the application process.' },
+          { name: 'Death Certificate Support', slug: 'death-certificate', icon: FileText, description: 'Guidance on the application process.' }
+        ]
+      },
+      {
+        name: 'Transport & Travel',
+        slug: 'transport-travel',
+        icon: Car,
+        description: 'Facilitation for driving licenses and passports.',
+        options: [
+          { name: 'Driving License Assistance', slug: 'driving-license', icon: Car, description: 'Guidance for new and renewal applications.' },
+          { name: 'Learning License Assistance', slug: 'learning-license', icon: Car, description: 'Support for learning license applications.' },
+          { name: 'Passport Application Guidance', slug: 'passport-application', icon: FileCheck2, description: 'Help with the passport application process.' }
+        ]
+      },
+      {
+        name: 'Social & Government Schemes',
+        slug: 'social-government-schemes',
+        icon: Users,
+        description: 'Informational assistance for key government welfare schemes.',
+        options: [
+          { name: 'Ration Card Assistance', slug: 'ration-card', icon: FileText, description: 'Guidance on ration card applications.' },
+          { name: 'Income/Caste/Domicile Certificate', slug: 'certificates', icon: FileText, description: 'Assistance with various state certificates.' },
+          { name: 'PM Kisan Scheme Assistance', slug: 'pm-kisan', icon: HandCoins, description: 'Guidance on the PM Kisan scheme.' },
+          { name: 'Pension Scheme Facilitation', slug: 'pension-scheme', icon: Users, description: 'Information on various pension schemes.' },
+          { name: 'Ayushman Bharat Guidance', slug: 'ayushman-bharat', icon: HeartHandshake, description: 'Awareness and guidance on Ayushman Bharat.' },
+          { name: 'PMJJBY / PMSBY Assistance', slug: 'pmjjby-pmsby', icon: Shield, description: 'Information on government insurance schemes.' }
+        ]
+      },
+      {
+        name: 'Education & Public Services',
+        slug: 'education-public-services',
+        icon: School,
+        description: 'Support for scholarship and exam form submissions.',
+        options: [
+          { name: 'Scholarship Application Support', slug: 'scholarship-application', icon: BadgePercent, description: 'Assistance with filling scholarship forms.' },
+          { name: 'Exam Form Filling', slug: 'exam-form', icon: FileCheck2, description: 'Help with online examination forms.' },
+          { name: 'Online Government Form Filling', slug: 'online-forms', icon: Laptop, description: 'General support for filling government forms.' }
+        ]
+      },
+    ]
+  },
+  {
+    name: 'Insurance Services',
+    slug: 'insurance-services',
     icon: Shield,
-    description: 'Connecting you with authorized insurers for your protection needs.',
+    description: 'Connecting you with authorized insurers (facilitation only, no selling).',
     options: [
       {
-        name: 'Life Insurance',
-        slug: 'life-insurance',
-        icon: HeartHandshake,
-        description: 'Protecting your family\'s future with life insurance policies.',
+        name: 'Insurance Types',
+        slug: 'insurance-types',
+        icon: Layers,
+        description: 'Informational guidance on various insurance categories.',
         options: [
-          { name: 'LIC of India', slug: 'lic', icon: LifeBuoy, description: 'Life Insurance Corporation of India.' },
-          { name: 'HDFC Life', slug: 'hdfc-life', icon: LifeBuoy, description: 'HDFC Life Insurance Co. Ltd.' },
-          { name: 'ICICI Prudential', slug: 'icici-prudential', icon: LifeBuoy, description: 'ICICI Prudential Life Insurance Co. Ltd.' },
-          { name: 'SBI Life', slug: 'sbi-life', icon: LifeBuoy, description: 'SBI Life Insurance Co. Ltd.' },
-          { name: 'Bajaj Allianz Life', slug: 'bajaj-allianz-life', icon: LifeBuoy, description: 'Bajaj Allianz Life Insurance Co. Ltd.' },
+          { name: 'Life Insurance', slug: 'life-insurance', icon: HeartHandshake, description: 'Information on term and endowment plans.' },
+          { name: 'Health Insurance', slug: 'health-insurance', icon: HeartHandshake, description: 'Information on individual and family floater plans.' },
+          { name: 'Motor Insurance', slug: 'motor-insurance', icon: Car, description: 'Guidance on bike, car, and commercial vehicle insurance.' },
+          { name: 'Travel Insurance', slug: 'travel-insurance', icon: Globe, description: 'Information on travel protection plans.' },
+          { name: 'Personal Accident Insurance', slug: 'personal-accident-insurance', icon: Shield, description: 'Information on accident coverage plans.' }
         ]
       },
       {
-        name: 'General Insurance',
-        slug: 'general-insurance',
-        icon: Package,
-        description: 'Cover for your health, vehicle, and property.',
+        name: 'Insurance Companies (Info)',
+        slug: 'insurance-companies-info',
+        icon: Building,
+        description: 'Informational guidance on major insurance providers.',
         options: [
-          { name: 'Motor Insurance', slug: 'motor-insurance', icon: Car, description: 'Assistance with securing insurance for your car or two-wheeler.' },
-          { name: 'Health Insurance', slug: 'health-insurance', icon: HeartHandshake, description: 'Find and apply for health insurance plans that fit your needs.' },
-          { name: 'Home Insurance', slug: 'home-insurance', icon: Home, description: 'Protect your home and belongings with the right insurance cover.' },
-          { name: 'SBI General Insurance', slug: 'sbi-general', icon: Shield, description: 'General insurance from SBI.' },
-          { name: 'ICICI Lombard', slug: 'icici-lombard', icon: Shield, description: 'General insurance from ICICI Lombard.' },
-          { name: 'HDFC ERGO', slug: 'hdfc-ergo', icon: Shield, description: 'General insurance from HDFC ERGO.' },
+          { name: 'SBI Life Insurance', slug: 'sbi-life', icon: Building, description: 'Information on SBI Life products.' },
+          { name: 'ICICI Prudential Life Insurance', slug: 'icici-prudential', icon: Building, description: 'Information on ICICI Prudential products.' },
+          { name: 'Bajaj Allianz Life Insurance', slug: 'bajaj-allianz', icon: Building, description: 'Information on Bajaj Allianz products.' },
+          { name: 'Max Life Insurance', slug: 'max-life', icon: Building, description: 'Information on Max Life products.' },
+          { name: 'Go Digit General Insurance', slug: 'go-digit', icon: Building, description: 'Information on Go Digit products.' }
         ]
-      },
-    ],
+      }
+    ]
   },
   {
-    name: 'Investment',
-    slug: 'investment',
+    name: 'Investment & Financial Awareness',
+    slug: 'investment-financial-awareness',
     icon: TrendingUp,
-    description: 'Guidance on various investment opportunities to grow your wealth.',
+    description: 'Guidance and awareness on various investment and financial products.',
     options: [
-       {
-        name: 'Demat & Securities',
-        slug: 'demat-securities',
-        icon: CandlestickChart,
-        description: 'Services for trading and holding securities.',
-        options: [
-          { name: 'Demat Account Opening', slug: 'demat-opening', icon: BookUser, description: 'Open a Demat account with leading brokers.'},
-          { name: 'NSDL Services', slug: 'nsdl', icon: Server, description: 'Services from National Securities Depository Limited.'},
-          { name: 'CDSL Services', slug: 'cdsl', icon: Server, description: 'Services from Central Depository Services Ltd.'},
-        ]
-      },
-      { name: 'Mutual Funds', slug: 'mutual-funds', icon: Layers, description: 'Facilitating investments in a wide range of mutual fund schemes.' },
-      { name: 'Stock Market', slug: 'stock-market', icon: BarChart, description: 'Assistance with demat account opening and stock trading.' },
-    ],
+      { name: 'Demat Account Assistance', slug: 'demat-account', icon: BookUser, description: 'Guidance on opening a Demat account with brokers.' },
+      { name: 'Mutual Fund Information Support', slug: 'mutual-funds', icon: Layers, description: 'Explaining the basics of mutual funds.' },
+      { name: 'SIP Guidance', slug: 'sip-guidance', icon: BarChart, description: 'Information on Systematic Investment Plans.' },
+      { name: 'National Pension Scheme (NPS)', slug: 'nps-guidance', icon: Users, description: 'Guidance on the NPS retirement savings scheme.' },
+      { name: 'Fixed Deposit Information', slug: 'fixed-deposit', icon: PiggyBank, description: 'Awareness about fixed deposit investments.' },
+      { name: 'Credit Score Guidance', slug: 'credit-score', icon: Star, description: 'Information on checking and understanding your credit score.' },
+      { name: 'Loan Guidance', slug: 'loan-guidance', icon: CircleDollarSign, description: 'Informational support on personal, business, or MSME loans.' },
+    ]
   },
   {
-    name: 'Business Services',
-    slug: 'business',
+    name: 'Business & Enterprise Services',
+    slug: 'business-enterprise-services',
     icon: Briefcase,
     description: 'Comprehensive support for starting and managing your business.',
     options: [
-      { name: 'Company Registration', slug: 'company-registration', icon: Building, description: 'Helping you with the legal process of registering your company.' },
-      { name: 'GST Registration', slug: 'gst-registration', icon: Receipt, description: 'Complete assistance for Goods and Services Tax (GST) registration.' },
-      { name: 'ITR Filing', slug: 'itr-filing', icon: FileCheck2, description: 'Assistance with filing your Income Tax Returns.' },
-    ],
+      {
+        name: 'Registration & Compliance',
+        slug: 'registration-compliance',
+        icon: FileCheck2,
+        description: 'Assistance with various business registrations.',
+        options: [
+          { name: 'MSME / Udyam Registration', slug: 'msme-udyam', icon: Briefcase, description: 'Guidance on Udyam registration.' },
+          { name: 'GST Registration Guidance', slug: 'gst-registration', icon: Receipt, description: 'Support for GST registration.' },
+          { name: 'GST Return Filing Assistance', slug: 'gst-filing', icon: Receipt, description: 'Guidance on filing GST returns.' },
+          { name: 'Trade License Support', slug: 'trade-license', icon: Award, description: 'Help with obtaining a trade license.' },
+          { name: 'Company Registration Guidance', slug: 'company-registration', icon: Building, description: 'Informational support on company registration.' },
+          { name: 'Startup India Registration', slug: 'startup-india', icon: Sparkles, description: 'Guidance on Startup India registration.' }
+        ]
+      },
+      {
+        name: 'Corporate & Brand Facilitation',
+        slug: 'corporate-brand-facilitation',
+        icon: Handshake,
+        description: 'Facilitating connections and enablement for corporate services.',
+        options: [
+          { name: 'BankSathi-type Services Info', slug: 'banksathi-info', icon: Users, description: 'Informational guidance on financial advisor platforms.' },
+          { name: 'Gromo-type Services Info', slug: 'gromo-info', icon: Users, description: 'Informational guidance on financial product distribution.' },
+          { name: 'Corporate Tie-ups Facilitation', slug: 'corporate-tieups', icon: Handshake, description: 'Assisting businesses in forming corporate partnerships.' },
+          { name: 'OEM Enablement Info', slug: 'oem-enablement', icon: Milestone, description: 'Informational support for Original Equipment Manufacturer enablement.' }
+        ]
+      }
+    ]
   },
   {
-    name: 'Cyber Cafe',
-    slug: 'cyber-cafe',
+    name: 'Documentation & Legal Support',
+    slug: 'documentation-legal-support',
+    icon: FileText,
+    description: 'Assistance with affidavit preparation, scanning, and uploading.',
+    options: [
+      { name: 'Affidavit Preparation Assistance', slug: 'affidavit-prep', icon: Scale, description: 'Guidance on drafting and preparing affidavits.' },
+      { name: 'Digital Documentation Support', slug: 'digital-docs', icon: FileUp, description: 'Help with creating and managing digital documents.' },
+      { name: 'Application & Compliance Assistance', slug: 'application-compliance', icon: FileCheck2, description: 'Support for filling out compliance forms.' },
+      { name: 'Scanning & Uploading Support', slug: 'scanning-uploading', icon: Scan, description: 'High-quality document scanning and uploading.' }
+    ]
+  },
+  {
+    name: 'Cyber Cafe & Digital Services',
+    slug: 'cyber-cafe-digital-services',
     icon: Laptop,
     description: 'A wide array of online services provided at your convenience.',
     options: [
-      { name: 'Online Applications', slug: 'online-applications', icon: FileText, description: 'Filling and submitting various online forms and applications.' },
-      { name: 'Document Scanning', slug: 'document-scanning', icon: Scroll, description: 'High-quality scanning and digital storage of your important documents.' },
-    ],
+      { name: 'Printing', slug: 'printing', icon: Printer, description: 'High-quality document printing services.' },
+      { name: 'Scanning', slug: 'scanning', icon: Scan, description: 'Professional document scanning services.' },
+      { name: 'Photocopy', slug: 'photocopy', icon: FileText, description: 'Fast and reliable photocopying services.' },
+      { name: 'Lamination', slug: 'lamination', icon: FileCheck2, description: 'Protect your important documents with lamination.' },
+      { name: 'Resume Preparation', slug: 'resume-prep', icon: BookUser, description: 'Assistance in creating a professional resume.' },
+      { name: 'Online Application Submission', slug: 'online-application-submission', icon: Laptop, description: 'Support for submitting various online applications.' },
+      { name: 'Email & Internet Assistance', slug: 'email-internet', icon: Globe, description: 'Help with email setup and internet browsing.' }
+    ]
   },
   {
-    name: 'Digital & Fintech',
-    slug: 'digital-fintech',
-    icon: CircleDollarSign,
-    description: 'Digital marketing and financial technology solutions.',
+    name: 'Digital Marketing & Business Promotion',
+    slug: 'digital-marketing-business-promotion',
+    icon: Megaphone,
+    description: 'Boosting your business\'s online presence and lead generation.',
     options: [
-       { name: 'Social Media Management', slug: 'social-media-management', icon: Users, description: 'Managing and growing your brand on social media platforms.' },
-       { name: 'Website Development', slug: 'website-development', icon: Globe, description: 'Creating professional and responsive websites for your business.' },
-       { name: 'PhonePe Services', slug: 'phonepe', icon: Smartphone, description: 'Utilize PhonePe for UPI and other transactions.' },
-       { name: 'PayNearby', slug: 'paynearby', icon: Store, description: 'AEPS and bill payment services.'},
-    ],
+      { name: 'Digital Marketing Assistance', slug: 'digital-marketing', icon: Megaphone, description: 'Guidance on digital marketing strategies.' },
+      { name: 'Branding & Online Presence', slug: 'branding-online-presence', icon: Star, description: 'Help with building a strong brand identity online.' },
+      { name: 'Website & Online Profile Support', slug: 'website-online-profile', icon: Globe, description: 'Assistance with website creation and profile management.' },
+      { name: 'Google Business Profile Setup', slug: 'google-business-profile', icon: Store, description: 'Guidance on setting up and optimizing your GBP.' },
+      { name: 'Local Business Promotion', slug: 'local-business-promotion', icon: Users, description: 'Strategies to promote your business locally.' },
+      { name: 'Lead Generation Support', slug: 'lead-generation', icon: Search, description: 'Assistance with generating potential customer leads.' },
+      { name: 'Online Reputation Guidance', slug: 'online-reputation', icon: Shield, description: 'Guidance on managing your online reputation.' }
+    ]
   },
   {
-    name: 'AI & Advanced Features',
-    slug: 'ai-features',
-    icon: BrainCircuit,
-    description: 'Cutting-edge AI-powered tools to enhance your experience.',
+    name: 'Marketplace & Platform Facilitation',
+    slug: 'marketplace-platform-facilitation',
+    icon: Store,
+    description: 'Support for sellers on major e-commerce platforms.',
     options: [
-      {
-        name: 'AI Chatbot',
-        slug: 'ai-chatbot',
-        icon: Bot,
-        description: 'Get instant informational guidance and assistance with enquiry forms through our conversational AI.',
-      },
-      {
-        name: 'Smart Service Recommendation',
-        slug: 'smart-recommendation',
-        icon: Sparkles,
-        description: 'Dynamically receive suggestions for related services based on your browsing activity.',
-      },
-      {
-        name: 'Auto Language Switch',
-        slug: 'language-switch',
-        icon: Languages,
-        description: 'Seamlessly switch website content between Hindi and English for your convenience.',
-      },
-      {
-        name: 'Intelligent Search',
-        slug: 'intelligent-search',
-        icon: Search,
-        description: 'Use our icon-enhanced, real-time search bar to find services quickly and intuitively.',
-      },
-    ],
-  },
+      { name: 'Amazon Seller Support', slug: 'amazon-seller-support', icon: Store, description: 'Guidance for selling on the Amazon marketplace.' },
+      { name: 'Flipkart Seller Support', slug: 'flipkart-seller-support', icon: Store, description: 'Guidance for selling on the Flipkart marketplace.' },
+      { name: 'Online Marketplace Onboarding', slug: 'marketplace-onboarding', icon: Milestone, description: 'Assistance with getting started on various online platforms.' }
+    ]
+  }
 ];
