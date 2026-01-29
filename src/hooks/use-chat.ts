@@ -51,7 +51,10 @@ export function useChat() {
       
       let description = 'Sorry, I\'m having a little trouble connecting right now. Please try again in a moment.';
       const errorMessage = (error as Error)?.message || '';
-      if (errorMessage.includes('429') || errorMessage.includes('quota')) {
+
+      if (errorMessage.includes('API key')) {
+        description = 'The AI assistant is not configured correctly. Please contact support.';
+      } else if (errorMessage.includes('429') || errorMessage.includes('quota')) {
         description = 'Our AI assistant is currently experiencing high traffic. Please try again in a minute.';
       }
 
