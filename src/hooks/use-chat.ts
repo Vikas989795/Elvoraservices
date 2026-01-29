@@ -3,6 +3,7 @@ import { useState, FormEvent, ChangeEvent } from 'react';
 import { useToast } from './use-toast';
 import { Message } from '@/ai/schema/chat';
 import { streamChat } from '@/lib/actions';
+import { readStreamableValue } from 'ai/rsc';
 
 export function useChat() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -30,16 +31,20 @@ export function useChat() {
       let assistantResponse = '';
       setMessages(prev => [...prev, { role: 'model', content: '' }]);
 
-      for await (const delta of result) {
-        assistantResponse += delta.response;
-        setMessages(prev => {
-          const lastMessage = prev[prev.length - 1];
-          if(lastMessage.role === 'model') {
-            lastMessage.content = assistantResponse;
-            return [...prev.slice(0, -1), lastMessage];
-          }
-          return prev;
-        });
+      for await (const delta of readStreamableValue(result)) {
+        if (typeof delta === 'string') {
+          assistantResponse += delta;
+          setMessages(prev => {
+            const lastMessage = prev[prev.length - 1];
+            if (lastMessage.role === 'model') {
+              return [
+                ...prev.slice(0, -1),
+                { ...lastMessage, content: assistantResponse },
+              ];
+            }
+            return prev;
+          });
+        }
       }
     } catch (error) {
       console.error('Chat submission failed:', error);
@@ -48,7 +53,8 @@ export function useChat() {
         description: 'Sorry, I\'m having a little trouble connecting right now. Please try again in a moment.',
         variant: 'destructive',
       });
-      setMessages(messages); // Revert to messages before user submission
+      // Revert to state before adding the assistant's placeholder message
+      setMessages(newMessages);
     } finally {
       setIsLoading(false);
     }

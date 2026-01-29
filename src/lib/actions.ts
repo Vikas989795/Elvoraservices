@@ -91,19 +91,19 @@ export async function submitApplication(prevState: CareerState, formData: FormDa
 
 
 export async function streamChat(history: Message[]) {
-  const stream = createStreamableValue({ response: '' });
+  const stream = createStreamableValue('');
 
   (async () => {
     try {
       const llmStream = await chat({ history, prompt: history[history.length - 1].content });
       for await (const chunk of llmStream) {
         if (chunk.text) {
-          stream.update({ response: chunk.text });
+          stream.update(chunk.text);
         }
       }
     } catch (e) {
       console.error(e);
-      stream.update({ response: 'An error occurred. Please try again.' });
+      stream.error(e);
     } finally {
       stream.done();
     }
