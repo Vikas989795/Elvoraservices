@@ -48,9 +48,16 @@ export function useChat() {
       }
     } catch (error) {
       console.error('Chat submission failed:', error);
+      
+      let description = 'Sorry, I\'m having a little trouble connecting right now. Please try again in a moment.';
+      const errorMessage = (error as Error)?.message || '';
+      if (errorMessage.includes('429') || errorMessage.includes('quota')) {
+        description = 'Our AI assistant is currently experiencing high traffic. Please try again in a minute.';
+      }
+
       toast({
         title: 'Chat Error',
-        description: 'Sorry, I\'m having a little trouble connecting right now. Please try again in a moment.',
+        description: description,
         variant: 'destructive',
       });
       // Revert to state before adding the assistant's placeholder message
