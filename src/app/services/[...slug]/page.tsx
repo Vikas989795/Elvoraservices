@@ -6,6 +6,8 @@ import NavButtons from '@/components/nav-buttons';
 import { ChevronRight, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import DisclaimerCard from '@/components/disclaimer-card';
+import { Suspense } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 // Function to find the current service/category node based on the slug parts
 function findServiceNode(slugParts: string[]): { node: ServiceOption, path: ServiceOption[] } | null {
@@ -40,6 +42,15 @@ export async function generateStaticParams() {
   return paths;
 }
 
+function NavButtonsFallback() {
+    return (
+        <div className="flex space-x-2">
+            <Skeleton className="h-10 w-24" />
+            <Skeleton className="h-10 w-24" />
+        </div>
+    );
+}
+
 export default function ServiceNodePage({ params }: { params: { slug: string[] } }) {
   const { slug } = params;
   const result = findServiceNode(slug);
@@ -59,7 +70,9 @@ export default function ServiceNodePage({ params }: { params: { slug: string[] }
     return (
       <div className="container mx-auto px-4 py-12">
         <div className="mb-8">
-          <NavButtons />
+          <Suspense fallback={<NavButtonsFallback />}>
+            <NavButtons />
+          </Suspense>
         </div>
         <div className="bg-card p-8 rounded-lg shadow-sm">
           <div className="flex items-start">
@@ -91,7 +104,9 @@ export default function ServiceNodePage({ params }: { params: { slug: string[] }
     return (
       <div className="container mx-auto px-4 py-12">
         <div className="mb-8">
-          <NavButtons />
+          <Suspense fallback={<NavButtonsFallback />}>
+            <NavButtons />
+          </Suspense>
         </div>
         <h1 className="font-headline text-4xl md:text-5xl font-bold">{node.name}</h1>
         <p className="mt-4 max-w-2xl text-lg text-muted-foreground">{node.description}</p>

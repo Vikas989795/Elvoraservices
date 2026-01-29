@@ -1,5 +1,35 @@
 import EnquiryForm from '@/components/forms/enquiry-form';
 import { Mail, Phone, MapPin } from 'lucide-react';
+import { Suspense } from 'react';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+
+function EnquiryFormFallback() {
+  return (
+    <Card>
+      <CardHeader>
+        <Skeleton className="h-8 w-48" />
+        <Skeleton className="h-4 w-64 mt-2" />
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-24" />
+          <Skeleton className="h-10 w-full" />
+        </div>
+         <div className="space-y-2">
+          <Skeleton className="h-4 w-24" />
+          <Skeleton className="h-10 w-full" />
+        </div>
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-24" />
+          <Skeleton className="h-20 w-full" />
+        </div>
+        <Skeleton className="h-10 w-full" />
+      </CardContent>
+    </Card>
+  );
+}
+
 
 export default function EnquiryPage() {
   return (
@@ -33,7 +63,9 @@ export default function EnquiryPage() {
           </div>
         </div>
         <div>
-          <EnquiryForm />
+          <Suspense fallback={<EnquiryFormFallback />}>
+            <EnquiryForm />
+          </Suspense>
         </div>
       </div>
     </div>
