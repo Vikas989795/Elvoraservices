@@ -47,7 +47,7 @@ export function useChat() {
         }
       }
     } catch (error) {
-      console.error('Chat submission failed:', error);
+      console.warn('Chat submission failed due to API limits or backend error. This is expected in some cases.', error);
       
       let description = 'Sorry, I\'m having a little trouble connecting right now. Please try again in a moment.';
       const errorMessage = (error as Error)?.message || '';
