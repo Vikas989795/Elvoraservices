@@ -1,4 +1,5 @@
 'use client';
+
 import { useState, FormEvent, ChangeEvent } from 'react';
 import { useToast } from './use-toast';
 import { Message } from '@/ai/schema/chat';
@@ -46,38 +47,42 @@ export function useChat() {
                 }
             }
             setIsLoading(false);
-            return; // Success
+            return; // Success, exit the function
         } catch (error) {
             attempts++;
             const errorMessage = (error as Error)?.message || '';
             const isRateLimitError = errorMessage.includes('429') || errorMessage.includes('quota');
             
             if (isRateLimitError && attempts < maxAttempts) {
-                console.warn(`Attempt ${attempts} failed. Retrying...`);
+                console.warn(`Attempt ${attempts} failed due to rate limiting. Retrying in ${retryDelay / 1000}s...`);
+                // Update UI to show retry status
                 setMessages(prev => {
                     const lastMessage = prev[prev.length - 1];
                     return [ ...prev.slice(0, -1), { ...lastMessage, content: `Our AI service is temporarily busy. Retrying...` } ];
                 });
                 await new Promise(res => setTimeout(res, retryDelay));
+                // Clear the retry message before the next attempt
                 setMessages(prev => {
                     const lastMessage = prev[prev.length - 1];
                     return [ ...prev.slice(0, -1), { ...lastMessage, content: '' } ];
                 });
+                continue; // Go to the next iteration of the while loop
             } else {
-                // Final failure
-                console.warn('Chat submission failed permanently.', error);
+                // This is a permanent failure (or max retries reached)
+                console.error('Chat submission failed permanently.', error);
                 let description = "Sorry, I'm having a little trouble connecting right now. Please try again in a moment.";
-                if (errorMessage.includes('API key')) {
-                    description = 'The AI assistant is not configured correctly. Please contact support.';
-                } else if (isRateLimitError) {
+                if (isRateLimitError) {
                     description = 'Our AI assistant is currently experiencing high traffic. Please try again in a minute.';
+                } else if (errorMessage.includes('API key')) {
+                    description = 'The AI assistant is not configured correctly. Please contact support.';
                 }
+
                 toast({ title: 'Chat Error', description, variant: 'destructive' });
                 
-                // Remove the assistant placeholder
+                // Clean up the optimistic UI placeholder
                 setMessages(prev => prev.slice(0, -1));
                 setIsLoading(false);
-                return;
+                return; // Exit the function
             }
         }
     }
