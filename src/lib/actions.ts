@@ -9,35 +9,34 @@ const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwrJ2NGs6he_R
 // Helper to extract the actual error from Google's HTML response
 function extractErrorMessage(html: string): string {
   try {
-    const specificMessages = [
-      {
-        keyword: "getFolderById",
-        message: "Google Apps Script Error: Failed to access the Google Drive folder. Please verify the Folder ID in your script and ensure the script has been granted Google Drive permissions.",
-      },
-      {
-        keyword: "getSheetByName",
-        message: "Google Apps Script Error: Failed to write to the Google Sheet because the specified sheet (tab) was not found. Please check the sheet name in your script.",
-      },
-      {
-        keyword: "appendRow",
-        message: "Google Apps Script Error: Failed to write to the Google Sheet. This is often because the target sheet name is incorrect or missing.",
-      }
-    ];
-
-    for (const { keyword, message } of specificMessages) {
-      if (html.includes(keyword)) {
-        return message;
-      }
+     // First, check for specific, known error messages for better diagnostics
+    if (html.includes("TypeError: Cannot read properties of undefined (reading 'contents')")) {
+        return "Google Apps Script Error: The backend script expects a JSON payload but received a different format. Please contact support.";
+    }
+    if (html.includes("getFolderById")) {
+        return "Google Apps Script Error: Failed to access the Google Drive folder. Please verify the Folder ID in your script and ensure the script has been granted Google Drive permissions.";
+    }
+    if (html.includes("getSheetByName")) {
+        return "Google Apps Script Error: Failed to write to the Google Sheet because the specified sheet (tab) was not found. Please check the sheet name in your script.";
     }
 
+    // Generic fallback parsing
     const match = html.match(/<div style="text-align:center;font-family:monospace;[^>]+">([^<]+)<\/div>/);
     if (match && match[1]) {
-      return `Google Apps Script Error: ${match[1].trim()}`;
+      const errorMessage = match[1].trim();
+      // Append the line number if available
+      const lineMatch = html.match(/ \(line (\d+), file/);
+      if (lineMatch && lineMatch[1]) {
+        return `Google Apps Script Error: ${errorMessage} (line ${lineMatch[1]})`;
+      }
+      return `Google Apps Script Error: ${errorMessage}`;
     }
   } catch (e) {
-    // Fallback if parsing fails
+    // Fallback if parsing fails, return a snippet of the raw response
+    return html.substring(0, 200); 
   }
-  return html; // Return the original HTML if no specific message is found
+  // Return the original HTML snippet if no specific message is found
+  return html.substring(0, 200);
 }
 
 
@@ -109,21 +108,28 @@ export async function submitApplication(data: z.infer<typeof careerSchema>): Pro
 
     const { resume, email, ...restOfData } = validatedFields.data;
     
+    // The backend script for careers expects 'mail' not 'email'
     let payload: any = {
       formType: 'career',
       fullName: restOfData.fullName,
-      mail: email, // Map email to mail for the career form JSON payload
+      mail: email,
       phone: restOfData.phone,
       position: restOfData.position,
       experience: restOfData.experience,
     };
 
     if (resume && resume.size > 0) {
-      const bytes = await resume.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-      payload.file = buffer.toString('base64');
-      payload.fileName = resume.name;
-      payload.mimeType = resume.type;
+      try {
+        const bytes = await resume.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+        // These are the keys the JSON script expects for the file
+        payload.file = buffer.toString('base64');
+        payload.fileName = resume.name;
+        payload.mimeType = resume.type;
+      } catch (fileError) {
+         console.error("Error processing resume file:", fileError);
+         return { success: false, message: 'There was an error reading the resume file.' };
+      }
     }
 
     try {
