@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useToast } from '@/hooks/use-toast';
 
-import { submitApplication, type CareerState } from '@/lib/actions';
+import { submitApplication, type FormState } from '@/lib/actions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,17 +14,17 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const careerSchema = z.object({
-  name: z.string().min(2, "Name is required"),
+  fullName: z.string().min(2, "Name is required"),
   email: z.string().email(),
   phone: z.string().min(10, "A valid phone number is required"),
   position: z.string().min(2, "Position of interest is required"),
   experience: z.string().min(1, "Years of experience is required"),
-  // resume: z.instanceof(File).optional(),
+  resume: z.any().optional(),
 });
 
 type CareerFormInputs = z.infer<typeof careerSchema>;
 
-const initialState: CareerState = {
+const initialState: FormState = {
   message: null,
   status: null,
 };
@@ -37,24 +37,26 @@ export default function CareerForm() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    reset,
   } = useForm<CareerFormInputs>({
     resolver: zodResolver(careerSchema),
   });
   
   useEffect(() => {
-    if (state.status === 'success') {
+    if (state.status === 'success' && state.message) {
       toast({
         title: "Application Submitted!",
         description: state.message,
       });
-    } else if (state.status === 'error') {
+      reset();
+    } else if (state.status === 'error' && state.message) {
       toast({
         title: "Submission Failed",
         description: state.message,
         variant: "destructive",
       });
     }
-  }, [state, toast]);
+  }, [state, toast, reset]);
 
   return (
     <Card>
@@ -65,9 +67,9 @@ export default function CareerForm() {
       <CardContent>
         <form action={formAction} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Full Name</Label>
-            <Input id="name" {...register('name')} />
-            {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
+            <Label htmlFor="fullName">Full Name</Label>
+            <Input id="fullName" {...register('fullName')} />
+            {errors.fullName && <p className="text-sm text-destructive">{errors.fullName.message}</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">Email Address</Label>
@@ -90,7 +92,7 @@ export default function CareerForm() {
             {errors.experience && <p className="text-sm text-destructive">{errors.experience.message}</p>}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="resume">Upload Resume (Optional)</Label>
+            <Label htmlFor="resume">Upload Resume</Label>
             <Input id="resume" type="file" {...register('resume')} />
           </div>
           <Button type="submit" className="w-full bg-primary" disabled={isSubmitting}>

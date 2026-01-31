@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useSearchParams } from 'next/navigation';
 
-import { submitEnquiry, type EnquiryState } from '@/lib/actions';
+import { submitEnquiry, type FormState } from '@/lib/actions';
 import { serviceCategories } from '@/lib/services';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,7 +17,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useToast } from '@/hooks/use-toast';
 
 const enquirySchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters."),
+  fullName: z.string().min(2, "Name must be at least 2 characters."),
   email: z.string().email("Invalid email address."),
   phone: z.string().min(10, "Phone number must be at least 10 digits."),
   service: z.string().optional(),
@@ -26,12 +26,15 @@ const enquirySchema = z.object({
 
 type EnquiryFormInputs = z.infer<typeof enquirySchema>;
 
-const allServices = serviceCategories.flatMap(cat => cat.options.map(opt => ({
-  value: `${cat.slug}-${opt.slug}`,
-  label: `${cat.name} - ${opt.name}`,
-})));
+const allServices = serviceCategories.flatMap(cat => 
+    cat.options ? cat.options.map(opt => ({
+        value: `${cat.name} - ${opt.name}`,
+        label: `${cat.name} - ${opt.name}`,
+    })) : []
+);
 
-const initialState: EnquiryState = {
+
+const initialState: FormState = {
   message: null,
   status: null,
 };
@@ -46,7 +49,7 @@ export default function EnquiryForm() {
     resolver: zodResolver(enquirySchema),
     defaultValues: {
       service: defaultService || '',
-      name: '',
+      fullName: '',
       email: '',
       phone: '',
       query: '',
@@ -54,13 +57,13 @@ export default function EnquiryForm() {
   });
 
   useEffect(() => {
-    if (state.status === 'success') {
+    if (state.status === 'success' && state.message) {
       toast({
         title: 'Enquiry Sent!',
         description: state.message,
       });
       form.reset();
-    } else if (state.status === 'error') {
+    } else if (state.status === 'error' && state.message) {
        toast({
         title: 'Submission Error',
         description: state.message,
@@ -78,9 +81,9 @@ export default function EnquiryForm() {
       <CardContent>
         <form action={formAction} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Full Name</Label>
-            <Input id="name" {...form.register('name')} />
-            {form.formState.errors.name && <p className="text-sm text-destructive">{form.formState.errors.name.message}</p>}
+            <Label htmlFor="fullName">Full Name</Label>
+            <Input id="fullName" {...form.register('fullName')} />
+            {form.formState.errors.fullName && <p className="text-sm text-destructive">{form.formState.errors.fullName.message}</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">Email Address</Label>
