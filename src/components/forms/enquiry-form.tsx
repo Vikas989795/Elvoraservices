@@ -1,12 +1,12 @@
 'use client';
 
-import { useActionState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useEffect } from 'react';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useSearchParams } from 'next/navigation';
 
-import { submitEnquiry, type FormState } from '@/lib/actions';
+import { submitEnquiry } from '@/lib/actions';
 import { serviceCategories } from '@/lib/services';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -33,16 +33,9 @@ const allServices = serviceCategories.flatMap(cat =>
     })) : []
 );
 
-
-const initialState: FormState = {
-  message: null,
-  status: null,
-};
-
 export default function EnquiryForm() {
   const searchParams = useSearchParams();
   const defaultService = searchParams.get('service');
-  const [state, formAction] = useActionState(submitEnquiry, initialState);
   const { toast } = useToast();
 
   const form = useForm<EnquiryFormInputs>({
@@ -57,20 +50,31 @@ export default function EnquiryForm() {
   });
 
   useEffect(() => {
-    if (state.status === 'success' && state.message) {
+    // If the URL param changes, update the form's default value
+    form.reset({ ...form.getValues(), service: defaultService || '' });
+  }, [defaultService, form]);
+
+
+  const onSubmit = async (data: EnquiryFormInputs) => {
+    try {
+      const result = await submitEnquiry(data);
+      if (!result.success) {
+        throw new Error(result.message || 'An unknown submission error occurred.');
+      }
+
       toast({
         title: 'Enquiry Sent!',
-        description: state.message,
+        description: result.message,
       });
       form.reset();
-    } else if (state.status === 'error' && state.message) {
-       toast({
-        title: 'Submission Error',
-        description: state.message,
+    } catch (error) {
+      toast({
+        title: 'Submission Failed',
+        description: (error as Error).message,
         variant: 'destructive',
       });
     }
-  }, [state, toast, form]);
+  };
 
   return (
     <Card>
@@ -79,7 +83,7 @@ export default function EnquiryForm() {
         <CardDescription>We'll respond within 24 hours.</CardDescription>
       </CardHeader>
       <CardContent>
-        <form action={formAction} className="space-y-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="fullName">Full Name</Label>
             <Input id="fullName" {...form.register('fullName')} />
@@ -97,18 +101,24 @@ export default function EnquiryForm() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="service">Service of Interest</Label>
-            <Select name="service" defaultValue={defaultService || undefined}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a service" />
-              </SelectTrigger>
-              <SelectContent>
-                {allServices.map(service => (
-                  <SelectItem key={service.value} value={service.value}>
-                    {service.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Controller
+              name="service"
+              control={form.control}
+              render={({ field }) => (
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a service" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {allServices.map(service => (
+                      <SelectItem key={service.value} value={service.value}>
+                        {service.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="query">Your Query</Label>

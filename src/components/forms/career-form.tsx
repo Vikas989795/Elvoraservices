@@ -1,16 +1,14 @@
 'use client';
 
-import { useActionState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useToast } from '@/hooks/use-toast';
 
-import { submitApplication, type FormState } from '@/lib/actions';
+import { submitApplication } from '@/lib/actions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const careerSchema = z.object({
@@ -19,18 +17,12 @@ const careerSchema = z.object({
   phone: z.string().min(10, "A valid phone number is required"),
   position: z.string().min(2, "Position of interest is required"),
   experience: z.string().min(1, "Years of experience is required"),
-  resume: z.any().optional(),
+  resume: z.instanceof(FileList).optional().refine(files => !files || files.length <= 1, "Only one resume can be uploaded."),
 });
 
 type CareerFormInputs = z.infer<typeof careerSchema>;
 
-const initialState: FormState = {
-  message: null,
-  status: null,
-};
-
 export default function CareerForm() {
-  const [state, formAction] = useActionState(submitApplication, initialState);
   const { toast } = useToast();
 
   const {
@@ -42,21 +34,31 @@ export default function CareerForm() {
     resolver: zodResolver(careerSchema),
   });
   
-  useEffect(() => {
-    if (state.status === 'success' && state.message) {
-      toast({
-        title: "Application Submitted!",
-        description: state.message,
-      });
-      reset();
-    } else if (state.status === 'error' && state.message) {
-      toast({
-        title: "Submission Failed",
-        description: state.message,
-        variant: "destructive",
-      });
+  const onSubmit = async (data: CareerFormInputs) => {
+    const submissionData = {
+        ...data,
+        resume: data.resume?.[0], // Get the single File object
+    };
+
+    try {
+        const result = await submitApplication(submissionData);
+        if (!result.success) {
+            throw new Error(result.message || "An unknown submission error occurred.");
+        }
+
+        toast({
+            title: "Application Submitted!",
+            description: result.message,
+        });
+        reset();
+    } catch (error) {
+        toast({
+            title: "Submission Failed",
+            description: (error as Error).message,
+            variant: "destructive",
+        });
     }
-  }, [state, toast, reset]);
+  };
 
   return (
     <Card>
@@ -65,7 +67,7 @@ export default function CareerForm() {
         <CardDescription>Fill out the form below to apply.</CardDescription>
       </CardHeader>
       <CardContent>
-        <form action={formAction} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="fullName">Full Name</Label>
             <Input id="fullName" {...register('fullName')} />
@@ -94,6 +96,7 @@ export default function CareerForm() {
           <div className="space-y-2">
             <Label htmlFor="resume">Upload Resume</Label>
             <Input id="resume" type="file" {...register('resume')} />
+            {errors.resume && <p className="text-sm text-destructive">{errors.resume.message as string}</p>}
           </div>
           <Button type="submit" className="w-full bg-primary" disabled={isSubmitting}>
             {isSubmitting ? 'Submitting...' : 'Submit Application'}

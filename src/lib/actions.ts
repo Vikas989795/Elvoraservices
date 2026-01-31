@@ -1,20 +1,48 @@
 'use server';
 
 import { z } from 'zod';
-import { chat } from '@/ai/flows/chat';
-import { Message } from '@/ai/schema/chat';
-import { createStreamableValue } from 'ai/rsc';
 
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwrJ2NGs6he_RMGSer2fnMoFebhKCMRcfCa-jQISYvNB_h22YmdHESLLNC6aOVpnDM6AQ/exec";
 
-// Helper function to handle response from Google Apps Script
-async function handleGoogleScriptResponse(response: Response): Promise<{ success: boolean; message: string }> {
-  const text = await response.text();
-  if (text === "Success") {
-    return { success: true, message: "Submission successful!" };
+// Helper to extract the actual error from Google's HTML response
+function extractErrorMessage(html: string): string {
+  try {
+    const specificMessages = [
+      {
+        keyword: "getFolderById",
+        message: "Google Apps Script Error: Failed to access the Google Drive folder. Please verify the Folder ID in your script and ensure the script has been granted Google Drive permissions.",
+      },
+      {
+        keyword: "getSheetByName",
+        message: "Google Apps Script Error: Failed to write to the Google Sheet because the specified sheet (tab) was not found. Please check the sheet name in your script.",
+      },
+      {
+        keyword: "appendRow",
+        message: "Google Apps Script Error: Failed to write to the Google Sheet. This is often because the target sheet name is incorrect or missing.",
+      }
+    ];
+
+    for (const { keyword, message } of specificMessages) {
+      if (html.includes(keyword)) {
+        return message;
+      }
+    }
+
+    const match = html.match(/<div style="text-align:center;font-family:monospace;[^>]+">([^<]+)<\/div>/);
+    if (match && match[1]) {
+      return `Google Apps Script Error: ${match[1].trim()}`;
+    }
+  } catch (e) {
+    // Fallback if parsing fails
   }
-  return { success: false, message: text }; // Return the error message from the script
+  return html; // Return the original HTML if no specific message is found
 }
+
+
+export type FormState = {
+  message: string | null;
+  success: boolean;
+};
 
 const enquirySchema = z.object({
   fullName: z.string().min(2, "Name must be at least 2 characters."),
@@ -30,142 +58,83 @@ const careerSchema = z.object({
   phone: z.string().min(10, "Phone number must be at least 10 digits."),
   position: z.string().min(2, "Position of interest is required."),
   experience: z.string().min(1, "Please specify your years of experience."),
-  resume: z.any().optional(),
+  resume: z.instanceof(File).optional(),
 });
 
-
-export type FormState = {
-  message: string;
-  status: 'success' | 'error';
-} | {
-  message: null;
-  status: null;
-};
-
-export async function submitEnquiry(prevState: FormState, formData: FormData): Promise<FormState> {
-  // Validate form data against the schema
-  const validatedFields = enquirySchema.safeParse(Object.fromEntries(formData.entries()));
+export async function submitEnquiry(data: z.infer<typeof enquirySchema>): Promise<FormState> {
+  const validatedFields = enquirySchema.safeParse(data);
 
   if (!validatedFields.success) {
     const firstError = Object.values(validatedFields.error.flatten().fieldErrors)[0]?.[0];
-    return {
-      message: firstError || "Invalid data provided.",
-      status: 'error',
-    };
+    return { success: false, message: firstError || "Invalid data." };
   }
-  
-  formData.append("formType", "enquiry");
+
+  const payload = {
+    type: 'enquiry',
+    ...validatedFields.data,
+  };
 
   try {
     const response = await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
-      body: formData,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      redirect: 'follow',
     });
-    
-    const result = await handleGoogleScriptResponse(response);
 
-    if (result.success) {
-       return {
-        message: 'Your enquiry has been submitted successfully! We will get back to you shortly.',
-        status: 'success',
-      };
+    const text = await response.text();
+
+    if (text === "Success") {
+      return { success: true, message: "Your enquiry has been submitted successfully!" };
     } else {
-       return {
-        message: `Submission failed: ${result.message}`,
-        status: 'error',
-      };
+      return { success: false, message: extractErrorMessage(text) };
     }
   } catch (error) {
     console.error("Error submitting enquiry:", error);
-    return {
-      message: 'An unexpected network error occurred. Please try again.',
-      status: 'error',
-    };
+    return { success: false, message: 'An unexpected network error occurred.' };
   }
 }
 
-export async function submitApplication(prevState: FormState, formData: FormData): Promise<FormState> {
-    const validatedFields = careerSchema.safeParse(Object.fromEntries(formData.entries()));
+export async function submitApplication(data: z.infer<typeof careerSchema>): Promise<FormState> {
+    const validatedFields = careerSchema.safeParse(data);
 
     if (!validatedFields.success) {
-        const firstError = Object.values(validatedFields.error.flatten().fieldErrors)[0]?.[0];
-        return {
-            message: firstError || "Invalid data provided.",
-            status: 'error',
-        };
+      const firstError = Object.values(validatedFields.error.flatten().fieldErrors)[0]?.[0];
+      return { success: false, message: firstError || "Invalid data." };
     }
 
-    const submissionFormData = new FormData();
-    for (const [key, value] of formData.entries()) {
-        if (key !== 'resume') {
-            submissionFormData.append(key, value);
-        }
-    }
-    
-    submissionFormData.append("formType", "career");
+    const { resume, ...restOfData } = validatedFields.data;
+    const payload: Record<string, any> = { type: 'career', ...restOfData };
 
-    const resumeFile = formData.get('resume') as File | null;
-    if (resumeFile && resumeFile.size > 0) {
-        const bytes = await resumeFile.arrayBuffer();
-        const buffer = Buffer.from(bytes);
-        const base64 = buffer.toString('base64');
-        submissionFormData.append('resume', base64);
-        submissionFormData.append('resumeName', resumeFile.name);
-        submissionFormData.append('resumeType', resumeFile.type);
-    } else {
-        // If there's no resume, ensure the script doesn't fail
-        submissionFormData.append('resume', '');
-        submissionFormData.append('resumeName', '');
-        submissionFormData.append('resumeType', '');
+    if (resume && resume.size > 0) {
+      const bytes = await resume.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      payload.file = buffer.toString('base64');
+      payload.fileName = resume.name;
+      payload.mimeType = resume.type;
     }
 
     try {
         const response = await fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
-            body: submissionFormData,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            redirect: 'follow',
         });
 
-        const result = await handleGoogleScriptResponse(response);
-
-        if (result.success) {
-            return {
-                message: 'Your application has been received. Thank you for your interest.',
-                status: 'success',
-            };
+        const text = await response.text();
+        if (text === 'Success') {
+            return { success: true, message: 'Your application has been submitted successfully!' };
         } else {
-            return {
-                message: `Submission failed: ${result.message}`,
-                status: 'error',
-            };
+            return { success: false, message: extractErrorMessage(text) };
         }
     } catch (error) {
-        console.error("Error submitting application:", error);
-        return {
-            message: 'An unexpected network error occurred. Please try again.',
-            status: 'error',
-        };
+        console.error('Error submitting application:', error);
+        return { success: false, message: 'An unexpected network error occurred.' };
     }
 }
 
-
-export async function streamChat(history: Message[]) {
-  const stream = createStreamableValue('');
-
-  (async () => {
-    try {
-      const llmStream = await chat({ history, prompt: history[history.length - 1].content });
-      for await (const chunk of llmStream) {
-        if (chunk.text) {
-          stream.update(chunk.text);
-        }
-      }
-    } catch (e) {
-      console.error(e);
-      stream.error(e);
-    } finally {
-      stream.done();
-    }
-  })();
-
-  return stream.value;
+// This function is no longer needed with the server-side proxy approach.
+export async function streamChat() {
+  throw new Error("Chat function not implemented in this version.");
 }
