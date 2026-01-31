@@ -69,16 +69,18 @@ export async function submitEnquiry(data: z.infer<typeof enquirySchema>): Promis
     return { success: false, message: firstError || "Invalid data." };
   }
 
-  const payload = {
-    type: 'enquiry',
-    ...validatedFields.data,
-  };
+  const formData = new FormData();
+  formData.append('formType', 'enquiry');
+  formData.append('fullName', validatedFields.data.fullName);
+  formData.append('email', validatedFields.data.email);
+  formData.append('phone', validatedFields.data.phone);
+  formData.append('service', validatedFields.data.service || '');
+  formData.append('query', validatedFields.data.query);
 
   try {
     const response = await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      body: formData,
       redirect: 'follow',
     });
 
@@ -104,21 +106,27 @@ export async function submitApplication(data: z.infer<typeof careerSchema>): Pro
     }
 
     const { resume, ...restOfData } = validatedFields.data;
-    const payload: Record<string, any> = { type: 'career', ...restOfData };
+    
+    const formData = new FormData();
+    formData.append('formType', 'career');
+    formData.append('fullName', restOfData.fullName);
+    formData.append('email', restOfData.email);
+    formData.append('phone', restOfData.phone);
+    formData.append('position', restOfData.position);
+    formData.append('experience', restOfData.experience);
 
     if (resume && resume.size > 0) {
       const bytes = await resume.arrayBuffer();
       const buffer = Buffer.from(bytes);
-      payload.file = buffer.toString('base64');
-      payload.fileName = resume.name;
-      payload.mimeType = resume.type;
+      formData.append('resume', buffer.toString('base64'));
+      formData.append('resumeName', resume.name);
+      formData.append('resumeType', resume.type);
     }
 
     try {
         const response = await fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
+            body: formData,
             redirect: 'follow',
         });
 
