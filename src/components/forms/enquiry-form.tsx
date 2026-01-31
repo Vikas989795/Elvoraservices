@@ -64,7 +64,7 @@ export default function EnquiryForm() {
 
       toast({
         title: 'Enquiry Sent!',
-        description: result.message,
+        description: "Thank you for showing interest in Elvora Services. We have successfully received your submission and will connect with you shortly.",
       });
       form.reset();
     } catch (error) {

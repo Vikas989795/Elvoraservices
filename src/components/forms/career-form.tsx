@@ -48,7 +48,7 @@ export default function CareerForm() {
 
         toast({
             title: "Application Submitted!",
-            description: result.message,
+            description: "Thank you for showing interest in Elvora Services. We have successfully received your submission and will connect with you shortly.",
         });
         reset();
     } catch (error) {

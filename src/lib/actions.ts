@@ -7,36 +7,31 @@ import { Message } from '@/ai/schema/chat';
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwrJ2NGs6he_RMGSer2fnMoFebhKCMRcfCa-jQISYvNB_h22YmdHESLLNC6aOVpnDM6AQ/exec";
 
 // Helper to extract the actual error from Google's HTML response
-function extractErrorMessage(html: string): string {
+function parseAppsScriptError(text: string): string {
   try {
-     // First, check for specific, known error messages for better diagnostics
-    if (html.includes("TypeError: Cannot read properties of undefined (reading 'contents')")) {
-        return "Google Apps Script Error: The backend script expects a JSON payload but received a different format. Please contact support.";
-    }
-    if (html.includes("getFolderById")) {
-        return "Google Apps Script Error: Failed to access the Google Drive folder. Please verify the Folder ID in your script and ensure the script has been granted Google Drive permissions.";
-    }
-    if (html.includes("getSheetByName")) {
-        return "Google Apps Script Error: Failed to write to the Google Sheet because the specified sheet (tab) was not found. Please check the sheet name in your script.";
-    }
-
-    // Generic fallback parsing
-    const match = html.match(/<div style="text-align:center;font-family:monospace;[^>]+">([^<]+)<\/div>/);
-    if (match && match[1]) {
-      const errorMessage = match[1].trim();
-      // Append the line number if available
-      const lineMatch = html.match(/ \(line (\d+), file/);
-      if (lineMatch && lineMatch[1]) {
-        return `Google Apps Script Error: ${errorMessage} (line ${lineMatch[1]})`;
+    if (text.includes("<!DOCTYPE html>")) {
+      // It's an HTML error page from Google
+      const match = text.match(/<div style="text-align:center;font-family:monospace;[^>]+">([^<]+)<\/div>/);
+      if (match && match[1]) {
+        const errorMessage = match[1].trim();
+        const lineMatch = text.match(/ \(line (\d+), file/);
+        if (lineMatch && lineMatch[1]) {
+          return `Google Apps Script Error: ${errorMessage} (line ${lineMatch[1]})`;
+        }
+        return `Google Apps Script Error: ${errorMessage}`;
       }
-      return `Google Apps Script Error: ${errorMessage}`;
+      return "An unknown error occurred with Google Apps Script.";
+    }
+    // If it's not HTML, it might be the plain text error message
+    if (text.startsWith("Error:")) {
+      return `Google Apps Script Error: ${text.substring(6).trim()}`;
     }
   } catch (e) {
-    // Fallback if parsing fails, return a snippet of the raw response
-    return html.substring(0, 200); 
+    // Fallback if parsing fails
+    return text.substring(0, 200); 
   }
-  // Return the original HTML snippet if no specific message is found
-  return html.substring(0, 200);
+  // Return the original text if no specific message is found
+  return text;
 }
 
 
@@ -90,7 +85,7 @@ export async function submitEnquiry(data: z.infer<typeof enquirySchema>): Promis
     if (text === "Success") {
       return { success: true, message: "Your enquiry has been submitted successfully!" };
     } else {
-      return { success: false, message: extractErrorMessage(text) };
+      return { success: false, message: parseAppsScriptError(text) };
     }
   } catch (error) {
     console.error("Error submitting enquiry:", error);
@@ -146,7 +141,7 @@ export async function submitApplication(data: z.infer<typeof careerSchema>): Pro
         if (text === 'Success') {
             return { success: true, message: 'Your application has been submitted successfully!' };
         } else {
-            return { success: false, message: extractErrorMessage(text) };
+            return { success: false, message: parseAppsScriptError(text) };
         }
     } catch (error) {
         console.error('Error submitting application:', error);
