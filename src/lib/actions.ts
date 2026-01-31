@@ -1,6 +1,8 @@
 'use server';
 
 import { z } from 'zod';
+import { chat } from '@/ai/flows/chat';
+import { Message } from '@/ai/schema/chat';
 
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwrJ2NGs6he_RMGSer2fnMoFebhKCMRcfCa-jQISYvNB_h22YmdHESLLNC6aOVpnDM6AQ/exec";
 
@@ -69,18 +71,18 @@ export async function submitEnquiry(data: z.infer<typeof enquirySchema>): Promis
     return { success: false, message: firstError || "Invalid data." };
   }
 
-  const formData = new FormData();
-  formData.append('formType', 'enquiry');
-  formData.append('fullName', validatedFields.data.fullName);
-  formData.append('email', validatedFields.data.email);
-  formData.append('phone', validatedFields.data.phone);
-  formData.append('service', validatedFields.data.service || '');
-  formData.append('query', validatedFields.data.query);
+  const payload = {
+    formType: 'enquiry',
+    ...validatedFields.data,
+  };
 
   try {
     const response = await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
-      body: formData,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
       redirect: 'follow',
     });
 
@@ -105,28 +107,32 @@ export async function submitApplication(data: z.infer<typeof careerSchema>): Pro
       return { success: false, message: firstError || "Invalid data." };
     }
 
-    const { resume, ...restOfData } = validatedFields.data;
+    const { resume, email, ...restOfData } = validatedFields.data;
     
-    const formData = new FormData();
-    formData.append('formType', 'career');
-    formData.append('fullName', restOfData.fullName);
-    formData.append('email', restOfData.email);
-    formData.append('phone', restOfData.phone);
-    formData.append('position', restOfData.position);
-    formData.append('experience', restOfData.experience);
+    let payload: any = {
+      formType: 'career',
+      fullName: restOfData.fullName,
+      mail: email, // Map email to mail for the career form JSON payload
+      phone: restOfData.phone,
+      position: restOfData.position,
+      experience: restOfData.experience,
+    };
 
     if (resume && resume.size > 0) {
       const bytes = await resume.arrayBuffer();
       const buffer = Buffer.from(bytes);
-      formData.append('resume', buffer.toString('base64'));
-      formData.append('resumeName', resume.name);
-      formData.append('resumeType', resume.type);
+      payload.file = buffer.toString('base64');
+      payload.fileName = resume.name;
+      payload.mimeType = resume.type;
     }
 
     try {
         const response = await fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
-            body: formData,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
             redirect: 'follow',
         });
 
@@ -142,7 +148,8 @@ export async function submitApplication(data: z.infer<typeof careerSchema>): Pro
     }
 }
 
-// This function is no longer needed with the server-side proxy approach.
-export async function streamChat() {
-  throw new Error("Chat function not implemented in this version.");
+
+export async function streamChat(history: Message[]) {
+  const prompt = history[history.length - 1]?.content ?? '';
+  return await chat({ history, prompt });
 }
