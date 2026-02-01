@@ -17,7 +17,7 @@ const careerSchema = z.object({
   phone: z.string().min(10, "A valid phone number is required"),
   position: z.string().min(2, "Position of interest is required"),
   experience: z.string().min(1, "Years of experience is required"),
-  resume: z.instanceof(FileList).optional().refine(files => !files || files.length <= 1, "Only one resume can be uploaded."),
+  resume: (typeof window === 'undefined' ? z.any() : z.instanceof(FileList)).optional().refine(files => !files || files.length <= 1, "Only one resume can be uploaded."),
 });
 
 type CareerFormInputs = z.infer<typeof careerSchema>;
