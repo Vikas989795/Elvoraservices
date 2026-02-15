@@ -161,7 +161,9 @@ export async function streamChat(history: Message[]) {
     try {
       const genkitStream = await chat({ history, prompt });
       for await (const chunk of genkitStream) {
-        stream.update(chunk);
+        if (chunk.text) {
+          stream.update(chunk.text);
+        }
       }
     } catch (e) {
       stream.error(e);
