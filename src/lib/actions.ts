@@ -1,8 +1,10 @@
+
 'use server';
 
 import { z } from 'zod';
 import { chat } from '@/ai/flows/chat';
 import { Message } from '@/ai/schema/chat';
+import { createStreamableValue } from 'ai/rsc';
 
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwrJ2NGs6he_RMGSer2fnMoFebhKCMRcfCa-jQISYvNB_h22YmdHESLLNC6aOVpnDM6AQ/exec";
 
@@ -54,7 +56,7 @@ const careerSchema = z.object({
   phone: z.string().min(10, "Phone number must be at least 10 digits."),
   position: z.string().min(2, "Position of interest is required."),
   experience: z.string().min(1, "Please specify your years of experience."),
-  resume: z.instanceof(File).optional(),
+  resume: (typeof window === 'undefined' ? z.any() : z.instanceof(FileList)).optional().refine(files => !files || files.length <= 1, "Only one resume can be uploaded."),
 });
 
 export async function submitEnquiry(data: z.infer<typeof enquirySchema>): Promise<FormState> {
@@ -83,7 +85,7 @@ export async function submitEnquiry(data: z.infer<typeof enquirySchema>): Promis
     const text = await response.text();
 
     if (text === "Success") {
-      return { success: true, message: "Your enquiry has been submitted successfully!" };
+      return { success: true, message: "Thank you for showing interest in Elvora Services. We have successfully received your submission and will connect with you shortly." };
     } else {
       return { success: false, message: parseAppsScriptError(text) };
     }
@@ -113,14 +115,15 @@ export async function submitApplication(data: z.infer<typeof careerSchema>): Pro
       experience: restOfData.experience,
     };
 
-    if (resume && resume.size > 0) {
+    if (resume && resume.length > 0 && resume[0].size > 0) {
       try {
-        const bytes = await resume.arrayBuffer();
+        const file = resume[0];
+        const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
         // These are the keys the JSON script expects for the file
         payload.file = buffer.toString('base64');
-        payload.fileName = resume.name;
-        payload.mimeType = resume.type;
+        payload.fileName = file.name;
+        payload.mimeType = file.type;
       } catch (fileError) {
          console.error("Error processing resume file:", fileError);
          return { success: false, message: 'There was an error reading the resume file.' };
@@ -139,7 +142,7 @@ export async function submitApplication(data: z.infer<typeof careerSchema>): Pro
 
         const text = await response.text();
         if (text === 'Success') {
-            return { success: true, message: 'Your application has been submitted successfully!' };
+            return { success: true, message: 'Thank you for showing interest in Elvora Services. We have successfully received your submission and will connect with you shortly.' };
         } else {
             return { success: false, message: parseAppsScriptError(text) };
         }
@@ -152,5 +155,20 @@ export async function submitApplication(data: z.infer<typeof careerSchema>): Pro
 
 export async function streamChat(history: Message[]) {
   const prompt = history[history.length - 1]?.content ?? '';
-  return await chat({ history, prompt });
+  const stream = createStreamableValue();
+
+  (async () => {
+    try {
+      const genkitStream = await chat({ history, prompt });
+      for await (const chunk of genkitStream) {
+        stream.update(chunk);
+      }
+    } catch (e) {
+      stream.error(e);
+    } finally {
+      stream.done();
+    }
+  })();
+
+  return stream.value;
 }
