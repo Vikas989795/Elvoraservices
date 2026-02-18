@@ -26,6 +26,7 @@ export async function chat(input: z.infer<typeof ChatInputSchema>) {
   const { history } = input;
 
   const { stream } = ai.generateStream({
+    model: 'googleai/gemini-1.5-flash-latest',
     prompt: `You are an advanced conversational AI assistant for the official website of ELVORA SERVICES ENTERPRISES.
 
 Your behavior must be similar to ChatGPT:
