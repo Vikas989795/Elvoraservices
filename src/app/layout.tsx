@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: 'Elvora Services Enterprises',
   description: 'Your trusted partner for government, banking, and business services.',
   icons: {
-    icon: '/favicon.ico',
+    icon: '/favicon.png',
   },
 };
 
