@@ -10,7 +10,8 @@ export const metadata: Metadata = {
   title: 'Elvora Services Enterprises',
   description: 'Your trusted partner for government, banking, and business services.',
   icons: {
-    icon: '/favicon.ico',},
+    icon: '/favicon.png',
+  },
 };
 
 export default function RootLayout({
@@ -21,7 +22,6 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/favicon.ico" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet" />
