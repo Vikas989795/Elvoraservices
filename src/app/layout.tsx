@@ -25,6 +25,8 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet" />
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2863417451460166"
+     crossorigin="anonymous"></script>
       </head>
       <body className={cn('min-h-screen bg-background font-body antialiased')}>
         <div className="relative flex min-h-screen flex-col">
